@@ -49,7 +49,8 @@ class plgContentKeyWordLinks extends JPlugin
 		$args = '';
 		foreach ($this->args as $key => $value)
 		{
-			$args .= $key.'="'.$value.'" ';
+			if ($value)
+				$args .= $key.'="'.$value.'" ';
 		}
 		
 		//save links
