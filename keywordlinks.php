@@ -55,12 +55,12 @@ class plgContentKeyWordLinks extends JPlugin
 		}
 		
 		//save links
-		$regex = '#<a(.*?)>(.*?)</a>#s';
+		$regex = '#<a(.*?)>(.*?)</a>#';
 		$article->text = preg_replace_callback($regex, array(&$this, '_excludeBlocks'), $article->text);
 			
 		if ($this->htags)
 		{
-			$regex = '#<h(.*?)>(.*?)</h.{1}>#s';
+			$regex = '#<h(.*?)>(.*?)</h.{1}>#';
 			$article->text = preg_replace_callback($regex, array(&$this, '_excludeBlocks'), $article->text);
 		}
 		
@@ -68,7 +68,7 @@ class plgContentKeyWordLinks extends JPlugin
 		{
 			list($keyword, $href) = explode('|', $match);
 			
-			$regex = '#\b'.$keyword.'\b#s';
+			$regex = '#\b'.$keyword.'\b#';
 			$link = '<a href="'.$href.'" '.$args.'>'.$keyword.'</a>';
 			
 			$article->text = preg_replace($regex, $link, $article->text, $this->limit);
@@ -78,7 +78,7 @@ class plgContentKeyWordLinks extends JPlugin
 		if (is_array($this->_blocks) && !empty($this->_blocks))
 		{
 			$this->_blocks = array_reverse($this->_blocks);
-			$regex = '#<!-- keywordlink-excluded-block -->#s';
+			$regex = '#<!-- keywordlink-excluded-block -->#';
 			$article->text = preg_replace_callback($regex, array(&$this, '_includeBlocks'), $article->text);
 		}
 			
