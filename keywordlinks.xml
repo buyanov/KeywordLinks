@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="content" method="upgrade">
+	<name>plg_keywordlinks</name>
+	<author>Buyanov Danila</author>
+	<creationDate>26 Sep 2012</creationDate>
+	<copyright>Copyright (C) 2005 - 2012 Buyanov Danila. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>info@saity74.ru</authorEmail>
+	<authorUrl>www.saity74.ru</authorUrl>
+	<version>1.0</version>
+	<description>PLG_KEYWORDLINKS_DESC</description>
+	<files>
+		<filename plugin="keywordlinks">keywordlinks.php</filename>
+		<filename>index.html</filename>
+	</files>
+    <languages folder="language">
+            <language tag="en-GB">en-GB/en-GB.plg_content_keywordlinks.ini</language>
+            <language tag="en-GB">en-GB/en-GB.plg_content_keywordlinks.sys.ini</language>
+            <language tag="ru-RU">ru-RU/ru-RU.plg_content_keywordlinks.ini</language>
+            <language tag="ru-RU">ru-RU/ru-RU.plg_content_keywordlinks.sys.ini</language>
+    </languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="nofollow" 
+					type="list" 
+					default="1" 
+					label="PLG_KEYWORDLINKS_NOFOLLOW_LABEL" 
+					description="PLG_KEYWORDLINKS_NOFOLLOW_DESC"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+		
+				<field 
+					name="target" 
+					type="list"
+					default="1"
+					label="PLG_KEYWORDLINKS_TARGET_LABEL" 
+					description="PLG_KEYWORDLINKS_NOFOLLOW_DESC"
+				>
+					<option value="0">PLG_KEYWORDLINKS_TARGET_PARENT</option>
+					<option value="1">PLG_KEYWORDLINKS_TARGET_BLANK</option>
+				</field>
+
+				<field 
+					name="htags" 
+					type="list" 
+					default="0" 
+					label="PLG_KEYWORDLINKS_HTAG_LABEL" 
+					description="PLG_KEYWORDLINKS_HTAG_DESC"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+		
+				<field 
+					name="limit" 
+					type="text" 
+					default="1" 
+					label="PLG_KEYWORDLINKS_LIMIT_LABEL" 
+					description="PLG_KEYWORDLINKS_LIMIT_DESC" 
+				/>
+
+				<field 
+					name="keywords" 
+					type="textarea" 
+					rows="10" 
+					cols="45" 
+					default="web design|http://www.saity74.ru" 
+					label="PLG_KEYWORDLINKS_KEYWORDS_LABEL"
+					description="PLG_KEYWORDLINKS_KEYWORDS_DESC" 
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
