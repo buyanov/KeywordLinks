@@ -20,7 +20,7 @@ class plgContentKeyWordLinks extends JPlugin
 {
 
 	protected $keywords;
-	protected $mode;
+	protected $nofollow;
 	protected $target;
 	protected $htags;
 	protected $limit;
@@ -34,7 +34,7 @@ class plgContentKeyWordLinks extends JPlugin
 		if (!$this->keywords)
 			return true;
 			
-		$this->nofollow 		= $this->params->get('nofollow');
+		$this->nofollow 	= $this->params->get('nofollow');
 		$this->target 		= $this->params->get('target');
 		$this->htags 		= $this->params->get('htags');
 		$this->limit		= $this->params->get('limit');
