@@ -13,6 +13,7 @@
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
+setlocale (LC_ALL, array ('ru_RU.CP1251', 'rus_RUS.1251'));
 
 jimport('joomla.plugin.plugin');
 
