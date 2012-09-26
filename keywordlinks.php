@@ -44,7 +44,7 @@ class plgContentKeyWordLinks extends JPlugin
 		
 		$this->args = array();
 		$this->args['rel'] = !$this->nofollow  ? 'nofollow' : 0;
-		$this->args['target'] = !$this->target ? '_blank' : '_parent';
+		$this->args['target'] = !$this->target ? '_parent' : '_blank';
 		
 		$args = '';
 		foreach ($this->args as $key => $value)
