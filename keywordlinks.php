@@ -13,7 +13,7 @@
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
-setlocale(LC_ALL, 'ru_RU.CP1251', 'rus_RUS.CP1251', 'Russian_Russia.1251', 'ru_RU.UTF-8'); 
+//setlocale(LC_ALL, 'ru_RU.CP1251', 'rus_RUS.CP1251', 'Russian_Russia.1251', 'ru_RU.UTF-8'); 
 
 jimport('joomla.plugin.plugin');
 
@@ -68,7 +68,7 @@ class plgContentKeyWordLinks extends JPlugin
 		{
 			list($keyword, $href) = explode('|', $match);
 			
-			$regex = '#\s'.$keyword.'\s#';
+			$regex = array('#\s'.$keyword.'\s#', '#\b'.$keyword.'\b#');
 			$link = ' <a href="'.$href.'" '.$args.'>'.$keyword.'</a> ';
 			
 			$article->text = preg_replace($regex, $link, $article->text, $this->limit);
