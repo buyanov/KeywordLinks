@@ -57,7 +57,7 @@ class plgContentKeyWordLinks extends JPlugin
 		$regex = '#<a(.*?)>(.*?)</a>#s';
 		$article->text = preg_replace_callback($regex, array(&$this, '_excludeBlocks'), $article->text);
 			
-		if (!$this->htags)
+		if ($this->htags)
 		{
 			$regex = '#<h(.*?)>(.*?)</h.{1}>#s';
 			$article->text = preg_replace_callback($regex, array(&$this, '_excludeBlocks'), $article->text);
