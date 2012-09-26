@@ -43,7 +43,7 @@ class plgContentKeyWordLinks extends JPlugin
 		$matches = explode("\n", $this->keywords);
 		
 		$this->args = array();
-		$this->args['rel'] = !$this->nofollow  ? 'nofollow' : 0;
+		$this->args['rel'] = !$this->nofollow  ? 0 : 'nofollow';
 		$this->args['target'] = !$this->target ? '_parent' : '_blank';
 		
 		$args = '';
