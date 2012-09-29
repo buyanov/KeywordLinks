@@ -78,6 +78,14 @@
 				</field>
 				
 				<field 
+					name="class" 
+					type="text" 
+					default="" 
+					label="PLG_KEYWORDLINKS_CLASS_LABEL" 
+					description="PLG_KEYWORDLINKS_CLASS_DESC" 
+				/>
+				
+				<field 
 					name="limit" 
 					type="text" 
 					default="1" 
