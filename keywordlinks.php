@@ -66,12 +66,12 @@ class plgContentKeyWordLinks extends JPlugin
 		
 		//save links
 		$regex = '#<a(.*?)>(.*?)</a>#';
-		$article->text = preg_replace_callback($regex, array(&$this, '_excludeLink'), $article->text);
+		$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
 			
 		if ($this->htags)
 		{
 			$regex = '#<h(.*?)>(.*?)</h.{1}>#';
-			$article->text = preg_replace_callback($regex, array(&$this, '_excludeHtag'), $article->text);
+			$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
 		}
 		
 		foreach ($matches as $match)
@@ -89,7 +89,7 @@ class plgContentKeyWordLinks extends JPlugin
 				$this->link = ' <a href="'.$href.'" '.$args.' '.($this->title? 'title="'.$keyword.'"' : '').'>'.$keyword.'</a> ';
 			}
 			
-			$article->text = preg_replace_callback($regex, array(&$this, '_excludeKeyword'), $article->text, $this->limit);
+			$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text, $this->limit);
 		}
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
@@ -106,26 +106,10 @@ class plgContentKeyWordLinks extends JPlugin
 
 	}
 	
-	protected function _excludeLink($matches)
-	{
-		$this->_blocks[] = array('link', $matches[0]);
-		return '<!-- keywordlink-excluded-link -->';
-	}
-	
-	protected function _excludeHtag($matches)
-	{
-		$this->_blocks[] = array('htag', $matches[0]);
-		return '<!-- keywordlink-excluded-htag -->';
-	}
-	
-	protected function _excludeKeyword($matches)
+	protected function _exclude($matches)
 	{
 		$this->counter++;
-		$this->_blocks[] = array('keyword-'.$this->counter, $this->link);
-		return '<!-- keywordlink-excluded-keyword-'.$this->counter.' -->';
+		$this->_blocks[] = array('block-'.$this->counter, $this->link);
+		return '<!-- keywordlink-excluded-block-'.$this->counter.' -->';
 	}
 }
-
-?>
-
-
