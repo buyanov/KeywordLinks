@@ -25,6 +25,8 @@ class plgContentKeyWordLinks extends JPlugin
 	protected $target;
 	protected $htags;
 	protected $limit;
+	protected $relative;
+	protected $class;
 	protected $args;
 	protected $_blocks;
 	protected $counter;
@@ -49,6 +51,7 @@ class plgContentKeyWordLinks extends JPlugin
 		$this->limit		= $this->params->get('limit', 1);
 		$this->title		= $this->params->get('title', 1);
 		$this->relative		= $this->params->get('relative', 1);
+		$this->class		= $this->params->get('class', '');
 		
 		if ($this->relative)
 		{
@@ -61,6 +64,7 @@ class plgContentKeyWordLinks extends JPlugin
 		$this->args = array();
 		$this->args['rel'] = !$this->nofollow  ? 0 : 'nofollow';
 		$this->args['target'] = !$this->target ? '_parent' : '_blank';
+		
 		
 		$args = '';
 		foreach ($this->args as $key => $value)
@@ -85,13 +89,16 @@ class plgContentKeyWordLinks extends JPlugin
 			
 			$regex = array('#\s('.$keyword.')\s#', '#\b'.$keyword.'\b#');
 			
+			$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
+			$title = $this->title? ' title="'.$keyword.'" ' : '';
+			
 			if (strpos($href, $host) !== false)
 			{
 				//relative link
-				$this->link = ' <a href="'.$href.'" '.($this->title? 'title="'.$keyword.'"' : '').'>'.$keyword.'</a> ';
+				$this->link = ' <a href="'.$href.'" '.$title.$class.'>'.$keyword.'</a> ';
 			} else {
 				//external link
-				$this->link = ' <a href="'.$href.'" '.$args.' '.($this->title? 'title="'.$keyword.'"' : '').'>'.$keyword.'</a> ';
+				$this->link = ' <a href="'.$href.'" '.$args.$title.$class.'>'.$keyword.'</a> ';
 			}
 			$this->counter++;
 			$this->_blocks[] = array($this->counter, $this->link);
