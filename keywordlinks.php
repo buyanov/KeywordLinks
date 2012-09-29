@@ -91,8 +91,6 @@ class plgContentKeyWordLinks extends JPlugin
 			
 			$article->text = preg_replace_callback($regex, array(&$this, '_excludeKeyword'), $article->text, $this->limit);
 		}
-	
-		print_r($this->_blocks);
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
 		{
