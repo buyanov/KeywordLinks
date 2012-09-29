@@ -43,7 +43,18 @@
 					<option value="0">PLG_KEYWORDLINKS_TARGET_PARENT</option>
 					<option value="1">PLG_KEYWORDLINKS_TARGET_BLANK</option>
 				</field>
-
+				
+				<field
+					name="relative" 
+					type="list" 
+					default="1" 
+					label="PLG_KEYWORDLINKS_RELATIVE_LABEL" 
+					description="PLG_KEYWORDLINKS_RELATIVE_DESC"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
 				<field 
 					name="htags" 
 					type="list" 
@@ -54,7 +65,18 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-		
+				
+				<field
+					name="title" 
+					type="list" 
+					default="1" 
+					label="PLG_KEYWORDLINKS_TITLE_LABEL" 
+					description="PLG_KEYWORDLINKS_TITLE_DESC"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
 				<field 
 					name="limit" 
 					type="text" 
