@@ -27,9 +27,12 @@ class plgContentKeyWordLinks extends JPlugin
 	protected $limit;
 	protected $args;
 	protected $_blocks;
+	protected $counter;
 	
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
+		$this->counter = 0;
+		
 		$this->keywords = trim($this->params->get('keywords'));
 		
 		if (!$this->keywords)
@@ -37,8 +40,15 @@ class plgContentKeyWordLinks extends JPlugin
 			
 		$this->nofollow 	= $this->params->get('nofollow');
 		$this->target 		= $this->params->get('target');
-		$this->htags 		= $this->params->get('htags');
-		$this->limit		= $this->params->get('limit');
+		$this->htags 		= $this->params->get('htags', 1);
+		$this->limit		= $this->params->get('limit', 1);
+		$this->title		= $this->params->get('title', 1);
+		$this->relative		= $this->params->get('relative', 1);
+		
+		if ($this->relative)
+		{
+			$host = JFactory::getURI()->getHost();
+		}
 	
 		
 		$matches = explode("\n", $this->keywords);
@@ -56,12 +66,12 @@ class plgContentKeyWordLinks extends JPlugin
 		
 		//save links
 		$regex = '#<a(.*?)>(.*?)</a>#';
-		$article->text = preg_replace_callback($regex, array(&$this, '_excludeBlocks'), $article->text);
+		$article->text = preg_replace_callback($regex, array(&$this, '_excludeLink'), $article->text);
 			
 		if ($this->htags)
 		{
 			$regex = '#<h(.*?)>(.*?)</h.{1}>#';
-			$article->text = preg_replace_callback($regex, array(&$this, '_excludeBlocks'), $article->text);
+			$article->text = preg_replace_callback($regex, array(&$this, '_excludeHtag'), $article->text);
 		}
 		
 		foreach ($matches as $match)
@@ -69,33 +79,55 @@ class plgContentKeyWordLinks extends JPlugin
 			list($keyword, $href) = explode('|', $match);
 			
 			$regex = array('#\s'.$keyword.'\s#', '#\b'.$keyword.'\b#');
-			$link = ' <a href="'.$href.'" '.$args.'>'.$keyword.'</a> ';
 			
-			$article->text = preg_replace($regex, $link, $article->text, $this->limit);
+			if (strpos($href, $host) !== false)
+			{
+				//relative link
+				$this->link = ' <a href="'.$href.'" '.($this->title? 'title="'.$keyword.'"' : '').'>'.$keyword.'</a> ';
+			} else {
+				//external link
+				$this->link = ' <a href="'.$href.'" '.$args.' '.($this->title? 'title="'.$keyword.'"' : '').'>'.$keyword.'</a> ';
+			}
+			
+			$article->text = preg_replace_callback($regex, array(&$this, '_excludeKeyword'), $article->text, $this->limit);
 		}
 	
+		print_r($this->_blocks);
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
 		{
-			$this->_blocks = array_reverse($this->_blocks);
-			$regex = '#<!-- keywordlink-excluded-block -->#';
-			$article->text = preg_replace_callback($regex, array(&$this, '_includeBlocks'), $article->text);
+			foreach ($this->_blocks as $block)
+			{
+				list($type, $value) = $block;
+				$regex = '#<!-- keywordlink-excluded-'.$type.' -->#';
+				$article->text = preg_replace($regex, $value, $article->text, 1);
+			}
 		}
 			
 		return true;
 
 	}
 	
-	protected function _excludeBlocks($matches)
+	protected function _excludeLink($matches)
 	{
-		$this->_blocks[] = $matches[0];
-		return '<!-- keywordlink-excluded-block -->';
+		$this->_blocks[] = array('link', $matches[0]);
+		return '<!-- keywordlink-excluded-link -->';
 	}
 	
-	protected function _includeBlocks($matches)
+	protected function _excludeHtag($matches)
 	{
-		$block = array_pop($this->_blocks);
-		return $block;
+		$this->_blocks[] = array('htag', $matches[0]);
+		return '<!-- keywordlink-excluded-htag -->';
+	}
+	
+	protected function _excludeKeyword($matches)
+	{
+		$this->counter++;
+		$this->_blocks[] = array('keyword-'.$this->counter, $this->link);
+		return '<!-- keywordlink-excluded-keyword-'.$this->counter.' -->';
 	}
 }
+
 ?>
+
+
