@@ -31,7 +31,12 @@ class plgContentKeyWordLinks extends JPlugin
 	
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
+		//echo $context;
+		if ($context != 'com_content.article') return true;
+				
 		$this->counter = 0;
+		$this->link = '';
+		$this->_blocks[] = array();
 		
 		$this->keywords = trim($this->params->get('keywords'));
 		
@@ -78,7 +83,7 @@ class plgContentKeyWordLinks extends JPlugin
 		{
 			list($keyword, $href) = explode('|', $match);
 			
-			$regex = array('#\s'.$keyword.'\s#', '#\b'.$keyword.'\b#');
+			$regex = array('#\s('.$keyword.')\s#', '#\b'.$keyword.'\b#');
 			
 			if (strpos($href, $host) !== false)
 			{
@@ -88,17 +93,18 @@ class plgContentKeyWordLinks extends JPlugin
 				//external link
 				$this->link = ' <a href="'.$href.'" '.$args.' '.($this->title? 'title="'.$keyword.'"' : '').'>'.$keyword.'</a> ';
 			}
-			
-			$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text, $this->limit);
+			$this->counter++;
+			$this->_blocks[] = array($this->counter, $this->link);
+			$article->text = preg_replace($regex, '<!-- keywordlink-excluded-block-'.$this->counter.' -->', $article->text, $this->limit);
 		}
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
 		{
 			foreach ($this->_blocks as $block)
 			{
-				list($type, $value) = $block;
-				$regex = '#<!-- keywordlink-excluded-'.$type.' -->#';
-				$article->text = preg_replace($regex, $value, $article->text, 1);
+				list($n, $value) = $block;
+				$regex = '#<!-- keywordlink-excluded-block-'.$n.' -->#';
+				$article->text = preg_replace($regex, $value, $article->text);
 			}
 		}
 			
@@ -108,8 +114,9 @@ class plgContentKeyWordLinks extends JPlugin
 	
 	protected function _exclude($matches)
 	{
+		
 		$this->counter++;
-		$this->_blocks[] = array('block-'.$this->counter, $this->link);
+		$this->_blocks[] = array($this->counter, $matches[0]);
 		return '<!-- keywordlink-excluded-block-'.$this->counter.' -->';
 	}
 }
