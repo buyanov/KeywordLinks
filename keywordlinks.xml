@@ -105,4 +105,7 @@
 			</fieldset>
 		</fields>
 	</config>
+	<updateservers>
+		<server type="extension" name="Saity74">http://update.saity74.ru/keywordlinks/extension.xml</server>
+	</updateservers>
 </extension>
