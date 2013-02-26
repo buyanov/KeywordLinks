@@ -34,7 +34,14 @@ class plgContentKeyWordLinks extends JPlugin
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
 		//echo $context;
-		if ($context != 'com_content.article') return true;
+		$app =& JFactory::getApplication(); if( $app->isAdmin() ) return true;
+		
+		$contexts = array(
+			'com_content.featured',
+			'com_content.article'
+		);
+		
+		if (!in_array($context, $contexts)) return true;
 				
 		$this->counter = 0;
 		$this->link = '';
