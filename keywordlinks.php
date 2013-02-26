@@ -17,6 +17,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.plugin.plugin');
 
+
+
 class plgContentKeyWordLinks extends JPlugin 
 {
 
@@ -33,9 +35,6 @@ class plgContentKeyWordLinks extends JPlugin
 	
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
-		//echo $context;
-		$app =& JFactory::getApplication(); if( $app->isAdmin() ) return true;
-		
 		$contexts = array(
 			'com_content.featured',
 			'com_content.article'
@@ -81,12 +80,10 @@ class plgContentKeyWordLinks extends JPlugin
 		}
 		
 		//save links and images
-		$regex = '#<a(.*?)>(.*?)</a>#';
+		$regex = array('#<a(.*?)>(.*?)</a>#', '#<img(.*?)/>#');
 		$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
 		
-		$regex = '#<img(.*?)/>#';
-		$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
-			
+	
 		if ($this->htags)
 		{
 			$regex = '#<h(.*?)>(.*?)</h.{1}>#';
@@ -110,6 +107,7 @@ class plgContentKeyWordLinks extends JPlugin
 				//external link
 				$this->link = ' <a href="'.$href.'" '.$args.$title.$class.'>'.$keyword.'</a> ';
 			}
+			
 			$this->counter++;
 			$this->_blocks[] = array($this->counter, $this->link);
 			$article->text = preg_replace($regex, '<!-- keywordlink-excluded-block-'.$this->counter.' -->', $article->text, $this->limit);
@@ -120,9 +118,11 @@ class plgContentKeyWordLinks extends JPlugin
 			foreach ($this->_blocks as $block)
 			{
 				list($n, $value) = $block;
-				$regex = '#<!-- keywordlink-excluded-block-'.$n.' -->#';
-				$article->text = preg_replace($regex, $value, $article->text);
+				$patterns[$n] = '#<!-- keywordlink-excluded-block-'.$n.' -->#';
+				$replacement[$n] = $value;
 			}
+			
+			$article->text = preg_replace($patterns, $replacement, $article->text);
 		}
 			
 		return true;
