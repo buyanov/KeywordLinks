@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>info@saity74.ru</authorEmail>
 	<authorUrl>www.saity74.ru</authorUrl>
-	<version>1.2</version>
+	<version>2.0</version>
 	<description>PLG_KEYWORDLINKS_DESC</description>
 	<files>
 		<filename plugin="keywordlinks">keywordlinks.php</filename>
@@ -96,8 +96,8 @@
 				<field 
 					name="keywords" 
 					type="textarea" 
-					rows="10" 
-					cols="45" 
+					rows="12" 
+					cols="80" 
 					default="web design|http://www.saity74.ru" 
 					label="PLG_KEYWORDLINKS_KEYWORDS_LABEL"
 					description="PLG_KEYWORDLINKS_KEYWORDS_DESC" 
