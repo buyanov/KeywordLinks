@@ -81,14 +81,16 @@ class plgContentKeyWordLinks extends JPlugin
 		
 		//save links and images
 		$regex = array('#<a(.*?)>(.*?)</a>#', '#<img(.*?)/>#');
+		
+		if ($this->htags)
+		{
+			$regex[] = '#<h(.*?)>(.*?)</h.{1}>#';
+		}
+		
 		$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
 		
 	
-		if ($this->htags)
-		{
-			$regex = '#<h(.*?)>(.*?)</h.{1}>#';
-			$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
-		}
+		
 		
 		foreach ($matches as $match)
 		{
