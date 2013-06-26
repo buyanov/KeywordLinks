@@ -92,25 +92,29 @@ class plgContentKeyWordLinks extends JPlugin
 		
 		foreach ($matches as $match)
 		{
-			list($keyword, $href) = explode('|', $match);
+			list($keyword, $href, $title) = explode('|', $match);
+			if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
+			{
+				$keyword = str_replace(array('[',']',':'), array('(?:', ')', '|'), $keyword);
+			}
 			
-			$regex = array('#\s('.$keyword.')\s#', '#\b'.$keyword.'\b#');
+			$first = mb_substr($keyword, 0, 1);
 			
+			$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:]){1}#u';
 			$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
-			$title = $this->title? ' title="'.$keyword.'" ' : '';
+			
+			$title = $this->title? ' title="'.$title.'" ' : '';
 			
 			if (strpos($href, $host) !== false)
 			{
 				//relative link
-				$this->link = ' <a href="'.$href.'" '.$title.$class.'>'.$keyword.'</a> ';
+				$this->link = '${1}<a href="'.$href.'" '.$title.$class.'>${2}</a>${3}';
 			} else {
 				//external link
-				$this->link = ' <a href="'.$href.'" '.$args.$title.$class.'>'.$keyword.'</a> ';
+				$this->link = '${1}<a href="'.$href.'" '.$args.$title.$class.'>${2}</a>${3}';
 			}
 			
-			$this->counter++;
-			$this->_blocks[] = array($this->counter, $this->link);
-			$article->text = preg_replace($regex, '<!-- keywordlink-excluded-block-'.$this->counter.' -->', $article->text, $this->limit);
+			$article->text = preg_replace($regex, $this->link, $article->text, $this->limit);
 		}
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
