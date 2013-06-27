@@ -61,9 +61,10 @@ class plgContentKeyWordLinks extends JPlugin
 		
 		if ($this->relative)
 		{
+			$uri = JFactory::getURI()->toString();
 			$host = JFactory::getURI()->getHost();
 		}
-	
+		
 		
 		$matches = explode("\n", $this->keywords);
 		
@@ -95,29 +96,34 @@ class plgContentKeyWordLinks extends JPlugin
 		foreach ($matches as $match)
 		{
 			list($keyword, $href, $title) = explode('|', $match);
-			if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
+			
+			if ($href !== $uri)
 			{
-				$keyword = str_replace(array('[',']',':'), array('(?:', ')', '|'), $keyword);
+				if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
+				{
+					$keyword = str_replace(array('[',']',':'), array('(?:', ')', '|'), $keyword);
+				}
+				
+				$first = mb_substr($keyword, 0, 1);
+				
+				$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:]){1}#u';
+				$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
+				
+				$title = $this->title? ' title="'.$title.'" ' : '';
+				
+				if (strpos($href, $host) !== false)
+				{
+					//relative link
+					$this->link = '${1}<a href="'.$href.'" '.$title.$class.'>${2}</a>${3}';
+				} else {
+					//external link
+					$this->link = '${1}<a href="'.$href.'" '.$args.$title.$class.'>${2}</a>${3}';
+				}
+				
+				$article->text = preg_replace($regex, $this->link, $article->text, $this->limit);
 			}
-			
-			$first = mb_substr($keyword, 0, 1);
-			
-			$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:]){1}#u';
-			$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
-			
-			$title = $this->title? ' title="'.$title.'" ' : '';
-			
-			if (strpos($href, $host) !== false)
-			{
-				//relative link
-				$this->link = '${1}<a href="'.$href.'" '.$title.$class.'>${2}</a>${3}';
-			} else {
-				//external link
-				$this->link = '${1}<a href="'.$href.'" '.$args.$title.$class.'>${2}</a>${3}';
-			}
-			
-			$article->text = preg_replace($regex, $this->link, $article->text, $this->limit);
 		}
+			
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
 		{
