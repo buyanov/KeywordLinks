@@ -37,7 +37,8 @@ class plgContentKeyWordLinks extends JPlugin
 	{
 		$contexts = array(
 			'com_content.featured',
-			'com_content.article'
+			'com_content.article',
+			'com_k2.item'
 		);
 		
 		if (!in_array($context, $contexts)) return true;
@@ -106,7 +107,7 @@ class plgContentKeyWordLinks extends JPlugin
 				
 				$first = mb_substr($keyword, 0, 1);
 				
-				$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:]){1}#u';
+				$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:\!\?]){1}#u';
 				$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
 				
 				$title = $this->title? ' title="'.$title.'" ' : '';
