@@ -1,4 +1,4 @@
-KeywordLinks v2.0
+KeywordLinks v2.1
 ============
 
-Plugin for Joomla 2.5 - replace keyword in the content of the links
+Plugin for Joomla 2.5 and 3.x - replace keyword in the content of the links
