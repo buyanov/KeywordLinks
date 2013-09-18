@@ -101,6 +101,11 @@ class plgContentKeyWordLinks extends JPlugin
 			{
 				$title_arg = '';
 				$keyword = trim($keyword);
+				$this->_normalize_url('http://saity74.ru/keywordlinks.html');
+				
+				$href = $this->_normalize_url($href);
+				$uri = $this->_normalize_url($uri);
+				
 				if ($href !== $uri)
 				{
 					if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
@@ -152,5 +157,30 @@ class plgContentKeyWordLinks extends JPlugin
 		$this->counter++;
 		$this->_blocks[] = array($this->counter, $matches[0]);
 		return '<!-- keywordlink-excluded-block-'.$this->counter.' -->';
+	}
+	
+	protected function _normalize_url($url)
+	{
+		$return = '';
+		
+		$parse_result = parse_url(trim($url));
+		if (isset($parse_result['scheme']))
+		{
+			$return .= $parse_result['scheme'].'://';
+		} else {
+			return false;
+		}
+		if (isset($parse_result['host']))
+		{
+			$return .= $parse_result['host'];
+		} else {
+			return false;
+		}
+		if (isset($parse_result['path']) && $parse_result['path'] !== '/')
+		{
+			$return .= $parse_result['path'];
+		}
+		
+		return $return;
 	}
 }
