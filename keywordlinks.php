@@ -101,7 +101,6 @@ class plgContentKeyWordLinks extends JPlugin
 			{
 				$title_arg = '';
 				$keyword = trim($keyword);
-				$this->_normalize_url('http://saity74.ru/keywordlinks.html');
 				
 				$href = $this->_normalize_url($href);
 				$uri = $this->_normalize_url($uri);
