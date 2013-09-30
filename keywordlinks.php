@@ -32,16 +32,20 @@ class plgContentKeyWordLinks extends JPlugin
 	protected $args;
 	protected $_blocks;
 	protected $counter;
+	protected $test;
 	
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
 		$contexts = array(
 			'com_content.featured',
 			'com_content.article',
+			'com_content.blog'
 			'com_k2.item'
 		);
 		
-		if (!in_array($context, $contexts)) return true;
+		$this->test = $this->params->get('test', 0);
+		
+		if (!$this->test && !in_array($context, $contexts)) return true;
 				
 		$this->counter = 0;
 		$this->link = '';
