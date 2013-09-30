@@ -39,7 +39,7 @@ class plgContentKeyWordLinks extends JPlugin
 		$contexts = array(
 			'com_content.featured',
 			'com_content.article',
-			'com_content.blog'
+			'com_content.blog',
 			'com_k2.item'
 		);
 		
