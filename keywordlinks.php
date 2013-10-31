@@ -113,7 +113,7 @@ class plgContentKeyWordLinks extends JPlugin
 				{
 					if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
 					{
-						$keyword = str_replace(array('[',']',':'), array('(?:', ')', '|'), $keyword);
+						$keyword = str_replace(array(':', '[',']'), array('|', '(?:', ')'), $keyword);
 					}
 					
 					$first = mb_substr($keyword, 0, 1);
