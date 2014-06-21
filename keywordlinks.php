@@ -175,7 +175,7 @@ class plgContentKeyWordLinks extends JPlugin
 				}
 			}
 			
-			if ($replacement && $patterns && isarray($replacement) && is_array($patterns))
+			if ($replacement && $patterns && is_array($replacement) && is_array($patterns))
 				$article->text = preg_replace($patterns, $replacement, $article->text);
 		}
 			
