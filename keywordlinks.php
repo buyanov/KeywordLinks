@@ -33,9 +33,13 @@ class plgContentKeyWordLinks extends JPlugin
 	protected $_blocks;
 	protected $counter;
 	protected $test;
+	protected $keywordlinks_id;
 	
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
+
+
+
 		$contexts = array(
 			'com_content.featured',
 			'com_content.article',
@@ -43,15 +47,21 @@ class plgContentKeyWordLinks extends JPlugin
 			'com_k2.item'
 		);
 		
+		if ($this->keywordlinks_id = $this->params->get('keywordlinks_id', ''))
+		{
+			$doc = JFactory::getDocument();
+			$doc->setMetaData('keywordlinks-verification', $this->keywordlinks_id, true);
+		}
+		
 		$this->test = $this->params->get('test', 0);
 		
 		if (!$this->test && !in_array($context, $contexts)) return true;
-				
+		
 		$this->counter = 0;
 		$this->link = '';
 		$this->_blocks[] = array();
 		
-		$this->keywords = trim($this->params->get('keywords'));
+		$this->keywords = trim($this->params->get('keywords', ''));
 		
 		if (!$this->keywords)
 			return true;
@@ -96,55 +106,77 @@ class plgContentKeyWordLinks extends JPlugin
 		$article->text = preg_replace_callback($regex, array(&$this, '_exclude'), $article->text);
 		
 		
-		foreach ($matches as $match)
+		if (!empty($matches))
 		{
-			list($keywords_str, $href, $title) = preg_split('~[=\|]~u', $match);
-			$keywords = explode(',',$keywords_str);
-			$title = trim($title);
-			foreach ($keywords as $keyword)
+			foreach ($matches as $match)
 			{
-				$title_arg = '';
-				$keyword = trim($keyword);
+				$keywords_str = null;
+				$href = null;
+				$title = null;
 				
-				$href = $this->_normalize_url($href);
-				$uri = $this->_normalize_url($uri);
-				
-				if ($href !== $uri)
+				$match_arr = preg_split('~[=\|]~u', $match);
+				if (count($match_arr) > 2)
 				{
-					if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
+					list($keywords_str, $href, $title) = $match_arr;
+				} else {
+					list($keywords_str, $href) = $match_arr;
+				}
+				
+				$keywords = explode(',',$keywords_str);
+				$title = trim($title);
+				foreach ($keywords as $keyword)
+				{
+					$title_arg = '';
+					$keyword = trim($keyword);
+					
+					$href = $this->_normalize_url($href);
+					$uri = $this->_normalize_url($uri);
+					
+					if ($href !== $uri)
 					{
-						$keyword = str_replace(array(':','[',']'), array('|', '(?:', ')'), $keyword);
+						if ((strpos($keyword, '[') !== false) && (strpos($keyword, ']') !== false))
+						{
+							$keyword = str_replace(array('[',']',':'), array('(?:', ')', '|'), $keyword);
+						}
+						
+						$first = mb_substr($keyword, 0, 1);
+						
+						$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:\!\?]){1}#u';
+						$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
+						
+						$title_arg = $this->title ? ' title="'.$title.'" ' : '';
+						
+						if (strpos($href, $host) !== false)
+						{
+							//relative link
+							$this->link = '${1}<a href="'.$href.'" '.$title_arg.$class.'>${2}</a>${3}';
+						} else {
+							//external link
+							$this->link = '${1}<a href="'.$href.'" '.$args.$title_arg.$class.'>${2}</a>${3}';
+						}
+						
+						$article->text = preg_replace($regex, $this->link, $article->text, $this->limit);
 					}
-					
-					$regex = '#(\s|[\>\'\"])('.$keyword.')(\s|[\<\.,\'\"\;\:\!\?]){1}#ui';
-					$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
-					
-					$title_arg = $this->title ? ' title="'.$title.'" ' : '';
-					
-					if (strpos($href, $host) !== false)
-					{
-						//relative link
-						$this->link = '${1}<a href="'.$href.'" '.$title_arg.$class.'>${2}</a>${3}';
-					} else {
-						//external link
-						$this->link = '${1}<a href="'.$href.'" '.$args.$title_arg.$class.'>${2}</a>${3}';
-					}
-					$article->text = preg_replace($regex, $this->link, $article->text, $this->limit);
 				}
 			}
 		}
-			
 		
 		if (is_array($this->_blocks) && !empty($this->_blocks))
 		{
+			$patterns = array();
+			$replacement = array();
 			foreach ($this->_blocks as $block)
 			{
-				list($n, $value) = $block;
-				$patterns[$n] = '#<!-- keywordlink-excluded-block-'.$n.' -->#';
-				$replacement[$n] = $value;
+				if (count($block) == 2)
+				{
+					list($n, $value) = $block;
+					$patterns[$n] = '#<!-- keywordlink-excluded-block-'.$n.' -->#';
+					$replacement[$n] = $value;
+				}
 			}
 			
-			$article->text = preg_replace($patterns, $replacement, $article->text);
+			if ($replacement && $patterns && isarray($replacement) && is_array($patterns))
+				$article->text = preg_replace($patterns, $replacement, $article->text);
 		}
 			
 		return true;
