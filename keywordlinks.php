@@ -50,7 +50,7 @@ class plgContentKeyWordLinks extends JPlugin
 		if ($this->keywordlinks_id = $this->params->get('keywordlinks_id', ''))
 		{
 			$doc = JFactory::getDocument();
-			$doc->setMetaData('keywordlinks-verification', $this->keywordlinks_id, true);
+			$doc->setMetaData('keywordlinks-verification', $this->keywordlinks_id);
 		}
 		
 		$this->test = $this->params->get('test', 0);
