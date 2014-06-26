@@ -139,9 +139,7 @@ class plgContentKeyWordLinks extends JPlugin
 							$keyword = str_replace(array('[',']',':'), array('(?:', ')', '|'), $keyword);
 						}
 						
-						$first = mb_substr($keyword, 0, 1);
-						
-						$regex = '#(\s|[\>\'\"])((?:'.mb_strtoupper($first).'|'.mb_strtolower($first).')'.mb_substr($keyword, 1).')(\s|[\<\.,\'\"\;\:\!\?]){1}#u';
+						$regex = '#(\s|[\>\'\"])('.$keyword.')(\s|[\<\.,\'\"\;\:\!\?\)]){1}#u';
 						$class = $this->class !== '' ? ' class="'.$this->class.'" ' : '';
 						
 						$title_arg = $this->title ? ' title="'.$title.'" ' : '';
